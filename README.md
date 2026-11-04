@@ -1,33 +1,51 @@
 # Saas Autososmed
 
-Saas Autososmed — project by Nabil Aulia Dika (dezzorigin).
+Saas Autososmed — project oleh Nabil Aulia Dika (dezzorigin).
 
 ## Status Proyek
 
 **Dalam pengembangan** _(README ada)_
 
-## Tech Stack
+## 📋 Tech Stack
 
-Mixed / Static
+Python, Node.js
 
-## Struktur Proyek
+## 🏗️ Arsitektur
+
+```mermaid
+flowchart LR
+  U[Pengguna] --> C[CLI / App]
+  C --> L[Core Logic]
+  L --> D[(Data)]
+```
+
+## 📁 Struktur Proyek
 
 ```
-.gitignore
+autososmed-full/
+saas-bundle/
+LICENSE
+PRD.md
 README.md
 autososmed-full.zip
-autososmed-full/
 saas-bundle.zip
-saas-bundle/
 ```
 
-## Getting Started
+## 🚀 Getting Started
 
-Buka file `index.html` di browser, atau serve folder dengan static server.
+```bash
+# Install dependencies
+npm install
 
-## Lisensi
+# Jalankan development server
+npm run dev
+```
 
-MIT — lihat file [LICENSE](./LICENSE).
+> Untuk project HTML/Python/Go, lihat instruksi di atas atau file konfigurasi.
+
+## 📄 Lisensi
+
+MIT — lihat [LICENSE](./LICENSE).
 
 ---
-_Dibuat dan dikelola oleh Nabil Aulia Dika. Kontribusi dan issue welcome._
+_Dikembangkan oleh **dezzorigin** (Nabil Aulia Dika)._
