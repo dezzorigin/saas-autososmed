@@ -5,8 +5,7 @@
 | Field | Nilai |
 |---|---|
 | Nama Proyek | Saas Autososmed |
-| Repo | dezzorigin/saas-autososmed |
-| Tech Stack | Mixed / Static |
+| Tech Stack | Python, Node.js |
 | Status | Dalam pengembangan |
 | Penanggung Jawab | Nabil Aulia Dika |
 | Versi Dokumen | 1.0 |
@@ -14,7 +13,7 @@
 
 ## 2. Latar Belakang
 
-Proyek ini dikembangkan sebagai bagian dari portofolio dan kebutuhan operasional. Dokumen ini mengikuti standar PRD nasional untuk memastikan ruang lingkup, fitur, dan kriteria keberhasilan terdefinisi dengan jelas.
+Proyek ini dikembangkan sebagai bagian dari portofolio dan kebutuhan operasional. Dokumen ini mengikuti standar PRD nasional agar ruang lingkup, fitur, dan kriteria keberhasilan terdefinisi dengan jelas.
 
 ## 3. Masalah yang Diselesaikan
 
@@ -40,12 +39,13 @@ Pengguna membutuhkan solusi digital yang efisien, terukur, dan mudah dipelihara 
 ## 6. Fitur & Persyaratan Fungsional
 
 Struktur proyek (file/direktori utama):
-- .gitignore
+- autososmed-full/
+- saas-bundle/
+- LICENSE
+- PRD.md
 - README.md
 - autososmed-full.zip
-- autososmed-full/
 - saas-bundle.zip
-- saas-bundle/
 
 ## 7. Persyaratan Non-Fungsional
 
@@ -56,7 +56,7 @@ Struktur proyek (file/direktori utama):
 
 ## 8. Arsitektur & Tech Stack
 
-Mixed / Static
+Python, Node.js
 
 ## 9. Milestone / Roadmap
 
