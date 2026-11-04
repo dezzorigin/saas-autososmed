@@ -1,0 +1,34 @@
+{
+  "nodes": [
+    "cron",
+    "load_tenant",
+    "entitlement",
+    "auth_reuse",
+    "captcha_login_branch",
+    "fetch_content",
+    "normalize_dedupe",
+    "execute_browser_post",
+    "notify",
+    "evidence"
+  ],
+  "edges": [
+    ["cron", "load_tenant"],
+    ["load_tenant", "entitlement"],
+    ["entitlement", "auth_reuse"],
+    ["auth_reuse", "captcha_login_branch"],
+    ["captcha_login_branch", "fetch_content"],
+    ["fetch_content", "normalize_dedupe"],
+    ["normalize_dedupe", "execute_browser_post"],
+    ["execute_browser_post", "notify"],
+    ["execute_browser_post", "evidence"]
+  ],
+  "campaign_fanout": {
+    "deskripsi": "1 campaign bundle -> N akun-produk, tiap akun dapat caption+media bervariasi, dieksekusi serial per platform dengan jeda+jitter",
+    "input": "campaign.json {media, caption_template, target_tenants[], platforms[]}",
+    "output": "21 job/hari, queue FIFO per worker-platform"
+  },
+  "workers": {
+    "ig_threads_worker": "playwright persistent-context, 1 browser-context per akun IG/Threads (bisa share session Meta)",
+    "tiktok_worker": "playwright persistent-context terpisah per akun TikTok, upload via tiktok.com/upload"
+  }
+}

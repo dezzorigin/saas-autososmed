@@ -1,0 +1,24 @@
+{
+  "jalur": 2,
+  "deskripsi": "Browser automation via Playwright persistent-context + session cookie reuse. 7 produk, 3 post/produk/hari = 21 slot/hari.",
+  "tenants": [
+    {"id": "produk-01", "nama": "Produk 01", "akun": {"ig": "ig_produk01", "threads": "th_produk01", "tiktok": "tt_produk01"}, "slot_harian": 3},
+    {"id": "produk-02", "nama": "Produk 02", "akun": {"ig": "ig_produk02", "threads": "th_produk02", "tiktok": "tt_produk02"}, "slot_harian": 3},
+    {"id": "produk-03", "nama": "Produk 03", "akun": {"ig": "ig_produk03", "threads": "th_produk03", "tiktok": "tt_produk03"}, "slot_harian": 3},
+    {"id": "produk-04", "nama": "Produk 04", "akun": {"ig": "ig_produk04", "threads": "th_produk04", "tiktok": "tt_produk04"}, "slot_harian": 3},
+    {"id": "produk-05", "nama": "Produk 05", "akun": {"ig": "ig_produk05", "threads": "th_produk05", "tiktok": "tt_produk05"}, "slot_harian": 3},
+    {"id": "produk-06", "nama": "Produk 06", "akun": {"ig": "ig_produk06", "threads": "th_produk06", "tiktok": "tt_produk06"}, "slot_harian": 3},
+    {"id": "produk-07", "nama": "Produk 07", "akun": {"ig": "ig_produk07", "threads": "th_produk07", "tiktok": "tt_produk07"}, "slot_harian": 3}
+  ],
+  "aturan_jalur2": {
+    "session_reuse": true,
+    "relogin_hanya_saat_mati": true,
+    "profile_dir_per_akun": "sessions/<platform>-<akun>",
+    "jeda_antar_post_per_akun_menit": {"ig": 90, "threads": 45, "tiktok": 120},
+    "jitter_menit": 25,
+    "jam_aktif": "07:00-22:00",
+    "maks_post_harian_per_akun": {"ig": 5, "threads": 8, "tiktok": 3},
+    "variasi_caption": "spintax + hashtag rotasi, jangan 100% identik antar akun",
+    "variasi_media": "ubah hash (resize 1px / metadata strip) per akun agar anti-duplicate-detect"
+  }
+}

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AutoSosmed — Mission Control (prototype)</title>
+<style>
+  :root{
+    --graphite:#1b2430; --graphite-2:#232f3f; --ink:#141b25;
+    --paper:#f4f2ea; --paper-2:#ece8db;
+    --amber:#ffb224; --amber-dim:#8a6a1f;
+    --steel:#8a94a6; --ok:#2e9e5b; --warn:#c77414; --bad:#c23b3b;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--graphite);color:var(--paper);
+    font-family:"Space Grotesk","Inter",system-ui,sans-serif;line-height:1.5}
+  a{color:var(--amber)}
+  header.top{display:flex;gap:16px;align-items:center;padding:18px 24px;
+    background:var(--ink);border-bottom:3px solid var(--amber);flex-wrap:wrap}
+  .brand{font-weight:700;font-size:22px;letter-spacing:.5px}
+  .brand small{display:block;font-weight:400;font-size:13px;color:var(--steel)}
+  .badge{border:1px solid var(--amber);color:var(--amber);border-radius:999px;
+    padding:4px 12px;font-size:13px;white-space:nowrap}
+  main{display:grid;grid-template-columns:300px 1fr 320px;gap:16px;padding:16px 24px 40px}
+  @media(max-width:1100px){main{grid-template-columns:1fr}}
+  section.panel{background:var(--paper);color:var(--ink);border-radius:var(--radius);
+    padding:16px 18px;min-width:0}
+  section.panel h2{margin:0 0 4px;font-size:18px}
+  section.panel p.sub{margin:0 0 12px;color:#4c5563;font-size:13.5px;max-width:62ch}
+  /* runway timeline — the memorable element: amber broadcast strip */
+  .runway{background:var(--ink);border-radius:10px;padding:12px;position:relative;overflow:hidden}
+  .runway::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--amber)}
+  .slot{display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:center;
+    padding:8px 10px 8px 14px;border-bottom:1px dashed #38445a;font-size:14px}
+  .slot:last-child{border-bottom:0}
+  .slot time{font-variant-numeric:tabular-nums;color:var(--amber);font-weight:700}
+  .slot .st{font-size:12px;border-radius:999px;padding:2px 10px;border:1px solid var(--steel);color:var(--steel)}
+  .slot .st.done{border-color:var(--ok);color:#7dd79c}
+  .slot .st.running{border-color:var(--amber);color:var(--amber)}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+  button{background:var(--amber);border:0;border-radius:10px;padding:10px 16px;
+    font-weight:700;cursor:pointer;color:#1b2430;font-size:14px}
+  button.ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
+  section.dark button.ghost{border-color:var(--steel);color:var(--paper)}
+  /* pipeline stepper: sequence, so numbering is honest */
+  ol.pipe{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+  ol.pipe li{background:var(--paper-2);border-radius:8px;padding:6px 10px;font-size:13px}
+  ol.pipe li b{color:var(--amber-dim);margin-right:6px;font-variant-numeric:tabular-nums}
+  /* accounts */
+  .acct{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #d8d3c4;font-size:14px}
+  .acct:last-child{border:0}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--steel);flex:none}
+  .dot.live{background:var(--ok)} .dot.dead{background:var(--bad)}
+  .acct button{margin-left:auto;padding:4px 10px;font-size:12px}
+  textarea{width:100%;min-height:90px;border-radius:10px;border:1.5px solid #b9b29e;
+    padding:10px;font:inherit;font-size:14px;background:#fff;color:var(--ink)}
+  .preview{background:#fff;border:1px solid #d8d3c4;border-radius:10px;padding:10px;font-size:13.5px;white-space:pre-wrap}
+  #evidence{font-size:13px;max-height:300px;overflow:auto;background:var(--ink);color:#c9d2e0;
+    border-radius:10px;padding:10px 12px;font-variant-numeric:tabular-nums}
+  footer{padding:0 24px 30px;color:var(--steel);font-size:13px}
+  :focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand>">AutoSosmed <small>Mission control · 7 produk · 21 post/hari · jalur browser</small></div>
+  <span class="badge">prototype · autososmed.pages.dev</span>
+  <span class="badge">backend Dokploy: nanti</span>
+</header>
+
+<main>
+  <section class="panel" aria-label="Akun dan sesi">
+    <h2>Akun &amp; sesi</h2>
+    <p class="sub">Satu profil browser per akun. Sesi dipakai ulang, login ulang hanya kalau mati. Klik untuk tandai sesi mati/hidup (tersimpan di browser ini).</p>
+    <div id="accounts"></div>
+  </section>
+
+  <section class="panel" aria-label="Antrian dan campaign">
+    <h2>Antrian 21 slot</h2>
+    <p class="sub">Satu campaign dipecah ke 7 produk, caption diputar per produk (spintax) supaya tidak identik. Simulasi jalan berurutan dengan jeda.</p>
+    <div class="controls">
+      <button id="btn-gen">Susun antrian</button>
+      <button id="btn-run" class="ghost">Simulasi jalan</button>
+      <button id="btn-export" class="ghost">Unduh JSON</button>
+    </div>
+    <label for="tpl">Template caption</label>
+    <textarea id="tpl">{Coba|Kenalin|Akhirnya rilis} fitur X dari {produk} — {diskon hari ini|gratis onboarding|demo 5 menit}! Klik link bio.</textarea>
+    <div class="runway" id="queue" aria-live="polite"></div>
+    <h2 style="margin-top:16px">Alur pipeline</h2>
+    <ol class="pipe" id="pipe"></ol>
+  </section>
+
+  <section class="panel dark" style="background:var(--graphite-2);color:var(--paper)" aria-label="Bukti">
+    <h2>Bukti jalan</h2>
+    <p class="sub" style="color:var(--steel)">Setiap eksekusi mencatat waktu, akun, dan status. Nanti dilengkapi screenshot + URL postingan.</p>
+    <div id="evidence">Belum ada jalan. Susun antrian, lalu simulasi.</div>
+  </section>
+</main>
+
+<footer>
+  Arsitektur: web statis ini (Cloudflare Pages) → nanti API + worker Playwright di VM Dokploy → Postgres.
+  Prototype ini tanpa password dan tanpa kredensial — login sesi dilakukan di mesin worker, bukan di web.
+</footer>
+
+<script>
+const TENANTS = ["produk-01","produk-02","produk-03","produk-04","produk-05","produk-06","produk-07"];
+const PLATFORMS = ["ig","threads","tiktok"];
+const PIPE = ["cron","load_tenant","entitlement","auth_reuse","captcha_login_branch","fetch_content","normalize_dedupe","execute_browser_post","notify","evidence"];
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch{ return d; } },
+  set(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
+};
+let sessions = store.get("as_sessions", {});
+let queue = [];
+
+function spin(tpl, i){
+  return tpl.replace(/\{([^}]+)\}/g, (_, g) => { const p = g.split("|"); return p[i % p.length]; });
+}
+function buildQueue(){
+  const tpl = document.getElementById("tpl").value;
+  queue = [];
+  TENANTS.forEach((t, ti) => {
+    for(let s = 0; s < 3; s++){
+      const caption = spin(tpl.replaceAll("{produk}", t), ti + s);
+      const m = 7*60 + Math.floor((15*60) * queue.length / 21) + ((queue.length * 37) % 51) - 25;
+      queue.push({ id: t + "-s" + (s+1), tenant: t,
+        waktu: String(Math.floor(m/60)).padStart(2,"0") + ":" + String(((m%60)+60)%60).padStart(2,"0"),
+        caption, status: "queued" });
+    }
+  });
+  renderQueue();
+  log(`Antrian disusun: ${queue.length} job, 7 produk x 3 slot.`);
+}
+function renderQueue(){
+  const el = document.getElementById("queue");
+  el.innerHTML = queue.map(j =>
+    `<div class="slot"><time>${j.waktu}</time><span><b>${j.tenant}</b> · ${j.caption.slice(0,72)}${j.caption.length>72?"…":""}</span><span class="st ${j.status}">${j.status}</span></div>`
+  ).join("");
+}
+function renderAccounts(){
+  const el = document.getElementById("accounts");
+  let html = "";
+  TENANTS.forEach(t => PLATFORMS.forEach(p => {
+    const id = p + "-" + t;
+    const live = sessions[id] !== "dead";
+    html += `<div class="acct"><span class="dot ${live?"live":"dead"}"></span><span>${id}</span><button data-acct="${id}">${live?"tandai mati":"tandai hidup"}</button></div>`;
+  }));
+  el.innerHTML = html;
+  el.querySelectorAll("button").forEach(b => b.onclick = () => {
+    const id = b.dataset.acct;
+    sessions[id] = sessions[id] === "dead" ? "live" : "dead";
+    store.set("as_sessions", sessions);
+    renderAccounts();
+  });
+}
+function log(msg){
+  const el = document.getElementById("evidence");
+  if(el.textContent.startsWith("Belum ada")) el.textContent = "";
+  const t = new Date().toLocaleTimeString("id-ID", {hour12:false});
+  el.innerHTML += `[${t}] ${msg}<br>`;
+  el.scrollTop = el.scrollHeight;
+}
+async function simulate(){
+  if(!queue.length) buildQueue();
+  const dead = queue.filter(j => sessions["ig-"+j.tenant]==="dead" && false);
+  log(`Simulasi mulai: ${queue.length} job berurutan (jeda dipadatkan untuk demo).`);
+  for(const j of queue){
+    j.status = "running"; renderQueue();
+    await new Promise(r => setTimeout(r, 220));
+    j.status = "done"; renderQueue();
+    log(`${j.waktu} ${j.id} done → evidence tersimpan.`);
+  }
+  log("Simulasi selesai: 21/21 done (demo, tanpa posting asli).");
+}
+document.getElementById("pipe").innerHTML = PIPE.map((n,i)=>`<li><b>${i+1}</b>${n}</li>`).join("");
+document.getElementById("btn-gen").onclick = buildQueue;
+document.getElementById("btn-run").onclick = simulate;
+document.getElementById("btn-export").onclick = () => {
+  const blob = new Blob([JSON.stringify(queue, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "antrian-21.json"; a.click();
+};
+renderAccounts();
+buildQueue();
+</script>
+</body>
+</html>

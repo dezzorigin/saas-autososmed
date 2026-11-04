@@ -1,0 +1,9 @@
+{
+  "id": "campaign-contoh-001",
+  "nama": "Launch fitur X",
+  "media": ["assets/video-01.mp4"],
+  "caption_template": "{Coba|Kenalin|Akhirnya rilis} fitur X dari {produk} — {diskon hari ini|gratis onboarding|demo 5 menit}! {cek|klik} link bio. #{produkTag} #founderstory",
+  "target_tenants": ["produk-01", "produk-02", "produk-03", "produk-04", "produk-05", "produk-06", "produk-07"],
+  "platforms": ["ig", "threads", "tiktok"],
+  "jadwal": "staggered 07:00-22:00, jeda per akun sesuai tenants.json"
+}
